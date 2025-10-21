@@ -1,4 +1,4 @@
-./transcript
-./work/
-./sim/
-./.vscode/
+sim/
+.vscode/
+*.ini
+transcript
