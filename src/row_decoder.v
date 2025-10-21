@@ -25,7 +25,7 @@ module row_decoder (
     wire [3:0] WL;
     wire [3:0] WLB;
 	assign WL = MAC_en ? (read_bar ? ~addr_in : addr_in) : key_in;
-	assign WLB = MAC_en ? (read_bar ? addr_in : ~addr_in) : ~key_in;
+	assign WLB = MAC_en ? (~read_bar ? ~addr_in : addr_in) : ~key_in;
 
     // disaggregate output signals
 	assign {WL3, WL2, WL1, WL0} = WL;
