@@ -1,0 +1,66 @@
+m255
+K4
+z2
+!s11f vlog 2020.4 2020.10, Oct 13 2020
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dD:/Code/Verilog/CELLA
+T_opt
+!s110 1761016224
+V:RG;TkN`fLPI[U4c:af053
+04 14 4 work row_decoder_tb fast 0
+=1-8cb87e7ab002-68f6f99d-1de-3be4
+o-quiet -auto_acc_if_foreign -work work
+Z1 tCvgOpt 0
+n@_opt
+OL;O;2020.4;71
+vrow_decoder
+Z2 !s110 1761016170
+!i10b 1
+!s100 n94@1Z?05K`0N7=XgnF]W1
+Z3 !s11b Dg1SIo80bB@j0V0VzS_@n1
+Icab`^<i2JPUz?aCHj`UNM3
+R0
+w1760795243
+8.\src\row_decoder.v
+F.\src\row_decoder.v
+!i122 0
+L0 3 32
+Z4 VDg1SIo80bB@j0V0VzS_@n1
+Z5 OL;L;2020.4;71
+r1
+!s85 0
+31
+Z6 !s108 1761016170.000000
+Z7 !s107 .\tb\row_decoder_tb.v|.\src\row_decoder.v|
+Z8 !s90 .\src\row_decoder.v|.\tb\row_decoder_tb.v|
+!i113 0
+Z9 o-L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+R1
+vrow_decoder_tb
+R2
+!i10b 1
+!s100 T^^OYI?eDMTc9L[V_g@FN0
+R3
+ILG=jFC=SZcffJKizKbJW>3
+R0
+w1761016126
+8.\tb\row_decoder_tb.v
+F.\tb\row_decoder_tb.v
+!i122 0
+L0 3 64
+R4
+R5
+r1
+!s85 0
+31
+R6
+R7
+R8
+!i113 0
+R9
+R1
