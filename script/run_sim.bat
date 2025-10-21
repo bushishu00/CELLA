@@ -59,7 +59,7 @@ if exist "%WLF_FILE%" (
 
 REM === 5. 启动 GUI（使用正确的 WLF）===
 echo Opening GUI with waveforms...
-start "" vsim -gui %TB_NAME% -wlf "%WLF_FILE%" -voptargs="+acc" -do "add wave -r /*; view wave"
+start "" vsim -gui %TB_NAME% -wlf "%WLF_FILE%" -voptargs="+acc" -do "add wave -r /*; run -all; view wave"
 
 echo Done.
 pause

@@ -22,23 +22,30 @@ module row_decoder_tb;
 
     // stimulus
     initial begin
+        // case1: MAC read
         MAC_en = 1'b1;
         read_bar = 1'b0;
         addr = 2'b10; 
         data = 4'b0000; 
-
+        // case2: data don't affect output in MAC mode
         #10;
         data = 4'b1111; 
+        // case3: addr affects output in MAC mode
         #10;
         addr = 2'b01;
+        // case4: read QB
         #10;
         read_bar = 1'b1;
+        // case5: CAM search key
         #10;
         MAC_en = 1'b0;
+        // case6: key affects output in CAM mode
         #10;
         data = 4'b1010;
+        // case7: addr don't affect output in CAM mode
         #10;
         addr = 2'b11;
+        // case8: read QB don't affect output in CAM mode
         #10;
         read_bar = 1'b0;
         #10;
