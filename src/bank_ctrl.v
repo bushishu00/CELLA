@@ -1,16 +1,14 @@
 // SRAM Bank Control Signal Generator
 // Supports MAC mode (diff) and CAM mode (single-ended)
-module sram_bank_ctrl (
-    input        clk,
-    input        rst_n,
-    input        w_en,      // write enable (high active)
-    input        mac_en,    // 1: MAC mode (diff), 0: CAM mode (single-ended)
+module Sbank_ctrl (
+    input clk,
+    input rst_n,
+    input w_en,      // write enable (high active)
+    input mac_en,    // 1: MAC mode (diff), 0: CAM mode (single-ended)
 
-    output reg   preb,      // precharge enable (active low)
-    output reg   sampleb,   // WL enable (active low, i.e., sampleb=0 => WL=1)
-    output reg   sa_en,     // sense amplifier enable (high active)
-    output reg   diff,      // SA input config: diff mode
-    output reg   diffb      // SA input config: complementary
+    output reg [7:0] preb,      // precharge enable (active low)
+    output reg [7:0] sampleb,   // WL enable (active low, i.e., sampleb=0 => WL=1)
+    output reg [7:0] sa_en     // sense amplifier enable (high active)
 );
 
 // Internal pipeline registers
@@ -31,18 +29,6 @@ end
 wire is_write = w_en_d;
 wire is_read  = ~w_en_d;  // assuming CS is always asserted (simplified)
 
-// Mode configuration for SA
-always @(*) begin
-    if (mac_en_d) begin
-        // MAC mode: differential input
-        diff  = 1'b1;
-        diffb = 1'b0;
-    end else begin
-        // CAM mode: single-ended (e.g., force diffb high or disable)
-        diff  = 1'b1;
-        diffb = 1'b1;  // or 1'b0 depending on your SA design
-    end
-end
 
 // Timing control: single-cycle operation
 // We use the fact that in cycle N:

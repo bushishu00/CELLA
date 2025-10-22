@@ -11,7 +11,7 @@ module col_decoder (
     wire [2:0] addr;
     wire [7:0] word_in;
     assign addr = {addr2, addr1, addr0};
-    assign word_in = {data3, data2, data1, data0};
+    assign word_in = {data7, data6, data5, data4, data3, data2, data1, data0};
 
     // 3-8 decoder for address
     wire [7:0] addr_in;
