@@ -3,6 +3,7 @@
 module row_decoder (
 	input MAC_en,
     input read_bar,
+    input w_en,
 	input addr0, addr1,
 	input data0, data1, data2, data3,
 	output WL0, WL1, WL2, WL3,
