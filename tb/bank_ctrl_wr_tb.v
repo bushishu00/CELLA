@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module bank_ctrl_tb;
+module bank_ctrl_wr_tb;
 
     // DUT interface
     reg clk;
@@ -13,7 +13,7 @@ module bank_ctrl_tb;
     wire sa_en;
 
     // Instantiate DUT
-    bank_ctrl uut (
+    bank_ctrl_wr uut (
         .clk(clk),
         .rst_n(rst_n),
         .w_en(w_en),
