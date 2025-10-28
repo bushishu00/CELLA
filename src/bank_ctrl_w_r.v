@@ -3,6 +3,7 @@ module bank_ctrl (
     input clk,
     input rst_n,
     input w_en,      
+    input r_en,
     output reg preb,    
     output reg w_drv,  
     output reg sampleb,   
@@ -28,11 +29,17 @@ module bank_ctrl (
     // Next state logic
     always @(*) begin
         case (state)
-            PRE: begin 
-                next_state = w_en ? WRITE : SENSE1;
+            PRE: begin // TODO: process w_en=1 and r_en=1
+                if (w_en)
+                    next_state = WRITE;
+                else if (r_en)
+                    next_state = SENSE1;
+                else
+                    next_state = PRE;
             end
             WRITE: begin
-                next_state = w_en ? WRITE : PRE;
+                // Write lasts 1 cycle, then back to PRE
+                next_state = PRE;
             end
             SENSE1: begin
                 // After disabling precharge, go to SA enable
@@ -40,7 +47,7 @@ module bank_ctrl (
             end
             SENSE2: begin
                 // SA lasts 1 cycle, then back to PRE
-                next_state = w_en ? WRITE : PRE;
+                next_state = PRE;
             end
             default: next_state = PRE;
         endcase
@@ -50,28 +57,28 @@ module bank_ctrl (
     always @(*) begin
         case (state)
             PRE: begin
-                preb    = 1'b0;  
-                w_drv   = 1'b0;  
-                sampleb = 1'b1;  
-                sa_en   = 1'b0;  
+                preb    = 1'b0;  // enable precharge (active low)
+                w_drv   = 1'b0;  // disable write driver
+                sampleb = 1'b1;  // disconnect SA
+                sa_en   = 1'b0;  // disable SA
             end
             WRITE: begin
-                preb    = 1'b1;  
-                w_drv   = 1'b1;  
-                sampleb = 1'b1;  
+                preb    = 1'b1;  // disable precharge
+                w_drv   = 1'b1;  // enable write driver
+                sampleb = 1'b1;  // keep SA disconnected
                 sa_en   = 1'b0;
             end
             SENSE1: begin
-                preb    = 1'b1;  
-                w_drv   = 1'b0;  
-                sampleb = 1'b0;  
+                preb    = 1'b1;  // disable precharge (bitlines discharge)
+                w_drv   = 1'b0;  // disable write driver
+                sampleb = 1'b0;  // SA still off
                 sa_en   = 1'b0;
             end
             SENSE2: begin
-                preb    = 1'b1;  
-                w_drv   = 1'b0;  
-                sampleb = 1'b1;  
-                sa_en   = 1'b1;  
+                preb    = 1'b1;  // keep precharge off
+                w_drv   = 1'b0;  // disable write driver
+                sampleb = 1'b1;  // connect BL/BLB to SA
+                sa_en   = 1'b1;  // enable SA
             end
             default: begin
                 preb    = 1'b0;
