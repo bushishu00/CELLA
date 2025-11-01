@@ -36,7 +36,7 @@ vmap work "%SIM_DIR%\work" >nul
 
 REM === 2. 编译 ===
 echo [2/3] Compiling...
-vlog -work work "%SRC_FILE%" "%TB_FILE%" "%PROJECT_ROOT%\src\full_adder.v" "%PROJECT_ROOT%\src\adder_nbit.v" 
+vlog -work work "%SRC_FILE%" "%TB_FILE%"
 if !errorlevel! neq 0 (
     echo ERROR: Compilation failed.
     pause & exit /b 1
