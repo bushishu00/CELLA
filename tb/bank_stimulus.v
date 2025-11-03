@@ -1,9 +1,9 @@
-module bank_write_gen (
+module bank_stimulus (
     output reg [3:0] query,
     output reg [7:0] word,
     output reg [1:0] addr,
     output reg MAC_en, w_en, read_bar,
-    output reg clk, rst_n, CS
+    output reg clk, CS
 );
     // Clock: 100 MHz (10 ns period)
     initial begin
@@ -14,7 +14,6 @@ module bank_write_gen (
     // Main stimulus sequence
     initial begin
         // Initialize
-        rst_n = 0;
         CS = 0;
         MAC_en = 1;
         w_en = 0;
@@ -23,7 +22,6 @@ module bank_write_gen (
         query = 0;
         word = 8'h00;
 
-        #20 rst_n = 1;      // Release reset
         #10 CS = 1;         // Enable chip
 
         // === MAC Write Test ===
