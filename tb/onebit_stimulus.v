@@ -18,7 +18,7 @@ module onebit_stimulus (
         WLB=1;
         preb = 1;      
         w_en = 1;
-        //read
+        //read Q
         #10 
         WL=0;
         WLB=0;
@@ -29,9 +29,17 @@ module onebit_stimulus (
         WLB=0;
         preb = 1;
         SAE  = 1;
-        #10
+        //read QB
+        #10 
+        WL=0;
+        WLB=0;
+        w_en = 0;
+        preb = 0;
+        #10 
         WL=0;
         WLB=1;
+        preb = 1;
+        SAE  = 1;
         //write 1
         #10
         WL=1;
@@ -39,7 +47,7 @@ module onebit_stimulus (
         w_en = 1;
         write_bit = 1;
         preb = 1;
-        //read
+        //read Q
         #10 
         WL=0;
         WLB=0;
@@ -50,9 +58,17 @@ module onebit_stimulus (
         WLB=0;
         preb = 1;
         SAE  = 1;
-        #10
+        //read QB
+        #10 
+        WL=0;
+        WLB=0;
+        w_en = 0;
+        preb = 0;
+        #10 
         WL=0;
         WLB=1;
+        preb = 1;
+        SAE  = 1;
 
     end
 endmodule
