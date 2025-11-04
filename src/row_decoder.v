@@ -13,7 +13,7 @@ module row_decoder (
     output           WL_dummy
  );
     // when access(w_en=0), WL_dummy is high for self timing
-    assign WL_dummy = ~w_en;
+    assign WL_dummy = ~w_en & cs;
 
     // 2-4 decoder for address
     wire [3:0] addr_in;

@@ -1,87 +1,193 @@
+//Verilog HDL for "CIM_macro", "verilog_onebit_stimulus" "functional"
+
+
 module onebit_stimulus (
-    output reg preb, w_en, write_bit,
+    output reg preb, w_en, write_bit, sampleb,
     output reg SAE, WL, WLB
 );
 
     // Main stimulus sequence
     initial begin
-        // Initialize
-        preb = 0;
-        w_en = 0;
-        SAE  = 0;
-        WL   = 0;
-        WLB  = 0;
-        write_bit = 0;
-        //write 0
+    // reset
+    write_bit = 0;
+
+    w_en = 0;
+    WL   = 0;
+    WLB  = 0;
+
+    preb = 0;
+    sampleb = 1;
+    SAE  = 0;
+    // write 1
+    #10
+    write_bit = 1;
+
+    w_en = 1;
+    WL   = 1;
+    WLB  = 1;
+
+    preb = 1;
+    sampleb = 1;
+    SAE  = 0;
+    
+    // read 1(Q)
+        // precharge
         #10
-        WL=1;
-        WLB=1;
-        preb = 1;      
-        w_en = 1;
-        //read Q
-        #10 
-        WL=0;
-        WLB=0;
-        w_en = 0;
-        preb = 0;
-        #10 
-        WL=1;
-        WLB=0;
-        preb = 1;
-        SAE  = 1;
-        //read QB
-        #10 
-        WL=0;
-        WLB=0;
-        w_en = 0;
-        preb = 0;
-        #10 
-        WL=0;
-        WLB=1;
-        preb = 1;
-        SAE  = 1;
-        //reset
-        preb = 0;
-        w_en = 0;
-        SAE  = 0;
-        WL   = 0;
-        WLB  = 0;
-        //write 1
-        #10
-        WL=1;
-        WLB=1;
-        w_en = 1;
         write_bit = 1;
-        preb = 1;
-        SAE = 0;
-        //read Q
-        #10 
-        WL=0;
-        WLB=0;
+
         w_en = 0;
-        preb = 0;
-        #10 
-        WL=1;
-        WLB=0;
-        preb = 1;
-        SAE  = 1;
-        //read QB
-        #10 
-        WL=0;
-        WLB=0;
-        w_en = 0;
-        preb = 0;
-        #10 
-        WL=0;
-        WLB=1;
-        preb = 1;
-        SAE  = 1;
-        // end
-        preb = 0;
-        w_en = 0;
-        SAE  = 0;
         WL   = 0;
         WLB  = 0;
-        write_bit = 0;
+
+        preb = 0;
+        sampleb = 1;
+        SAE  = 0;
+        // sample
+        #10
+        write_bit = 1;
+
+        w_en = 0;
+        WL   = 1;
+        WLB  = 0;
+
+        preb = 1;
+        sampleb = 0;
+        SAE  = 0;
+        // sense amplify
+        #10
+        write_bit = 1;
+
+        w_en = 0;
+        WL   = 0;
+        WLB  = 0;
+
+        preb = 1;
+        sampleb = 1;
+        SAE  = 1;
+        // reset
+        #10
+        write_bit = 1;
+
+        w_en = 0;
+        WL   = 0;
+        WLB  = 0;
+
+        preb = 0;
+        sampleb = 1;
+        SAE  = 0;
+    // read 0(QB)
+        // precharge
+        #10
+        write_bit = 1;
+
+        w_en = 0;
+        WL   = 0;
+        WLB  = 0;
+
+        preb = 0;
+        sampleb = 1;
+        SAE  = 0;
+        // sample
+        #10
+        write_bit = 1;
+
+        w_en = 0;
+        WL   = 0;
+        WLB  = 1;
+
+        preb = 1;
+        sampleb = 0;
+        SAE  = 0;
+        // sense amplify
+        #10
+        write_bit = 1;
+
+        w_en = 0;
+        WL   = 0;
+        WLB  = 0;
+
+        preb = 1;
+        sampleb = 1;
+        SAE  = 1;
+        // reset
+        #10
+        write_bit = 1;
+
+        w_en = 0;
+        WL   = 0;
+        WLB  = 0;
+
+        preb = 0;
+        sampleb = 1;
+        SAE  = 0;
+    
+    // read Q with another timing
+        // precharge
+        #10
+        write_bit = 1;
+
+        w_en = 0;
+        WL   = 0;
+        WLB  = 0;
+
+        preb = 0;
+        sampleb = 1;
+        SAE  = 0;
+        // sample and sa
+        #10
+        write_bit = 1;
+
+        w_en = 0;
+        WL   = 1;
+        WLB  = 0;
+
+        preb = 1;
+        sampleb = 0;
+        SAE  = 1;
+        // reset
+        #10
+        write_bit = 1;
+
+        w_en = 0;
+        WL   = 0;
+        WLB  = 0;
+
+        preb = 0;
+        sampleb = 1;
+        SAE  = 0;
+    // read QB with another timing
+        // precharge
+        #10
+        write_bit = 1;
+
+        w_en = 0;
+        WL   = 0;
+        WLB  = 0;
+
+        preb = 0;
+        sampleb = 1;
+        SAE  = 0;
+        // sample and sa
+        #10
+        write_bit = 1;
+
+        w_en = 0;
+        WL   = 0;
+        WLB  = 1;
+
+        preb = 1;
+        sampleb = 0;
+        SAE  = 1;
+        // reset
+        #10
+        write_bit = 1;
+
+        w_en = 0;
+        WL   = 0;
+        WLB  = 0;
+
+        preb = 0;
+        sampleb = 1;
+        SAE  = 0;
     end
 endmodule
