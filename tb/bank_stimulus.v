@@ -17,35 +17,28 @@ module bank_stimulus (
         CS = 0;
         MAC_en = 1;
         w_en = 0;
-        read_bar = 1;
+        read_bar = 0;
         addr = 0;
         query = 0;
         word = 8'h00;
 
-        #10 CS = 1;         // Enable chip
+        #3 CS = 1;         // Enable chip
 
         // === MAC Write Test ===
-        #10 addr = 2'b00; word = 8'hAA; w_en = 1;
-        #10 w_en = 0;
-
-        #10 addr = 2'b01; word = 8'h55; w_en = 1;
-        #10 w_en = 0;
+        #10 addr = 2'b00; word = 8'b0000_0001; w_en = 1;
+        #10 addr = 2'b01; word = 8'b0000_0111; w_en = 1;
 
         // === MAC Read Test (Q) ===
-        #10 addr = 2'b00; read_bar = 0;  // Read Q
-        #20;
-
+        #10 w_en = 0;addr = 2'b00; read_bar = 0;  // Read Q
         // === MAC Read Test (QB) ===
         #10 addr = 2'b00; read_bar = 1;  // Read QB
-        #20;
+        #10 addr = 2'b01; read_bar = 0;  // Read Q
 
         // === Switch to CAM Mode ===
         #10 MAC_en = 0;
-        #10 query = 4'hA;   // Search key 0xA
-        #20;
+        #10 query = 4'b0011;   // Search key 0xA
 
-        #10 query = 4'hF;   // Search key 0xF (no match)
-        #20;
+        #10 query = 4'b1111;   // Search key 0xF (no match)
 
         // === Back to MAC ===
         #10 MAC_en = 1;
