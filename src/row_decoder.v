@@ -8,8 +8,8 @@ module row_decoder (
     input        w_en,
 	input  [1:0] addr,
 	input  [3:0] data,
-	output [3:0] WL_bar,
-	output [3:0] WLB_bar
+	output [3:0] WL,
+	output [3:0] WLB
  );
     // 2-4 decoder for address
     wire [3:0] addr_in;
@@ -18,35 +18,33 @@ module row_decoder (
     assign addr_in[2] =  addr[1] & ~addr[0];
     assign addr_in[3] =  addr[1] &  addr[0];
 
-    reg [3:0] WL, WLB;
-
+    reg [3:0] WL_r, WLB_r;
     // muxing logic for CAM and MAC
 	always @(posedge clk or negedge cs) begin
         if (!cs) begin
-            WL = 4'b0000;
-            WLB = 4'b0000;
+            WL_r = 4'b0000;
+            WLB_r = 4'b0000;
         end
         else if (w_en) begin
-            WL = addr_in;
-            WLB = addr_in;
+            WL_r = addr_in;
+            WLB_r = addr_in;
         end 
         else if (MAC_en) begin
             if (read_bar) begin
-                WL = 4'b0000;
-                WLB = addr_in;
+                WL_r = 4'b0000;
+                WLB_r = addr_in;
             end else begin
-                WL = addr_in;
-                WLB = 4'b0000;
+                WL_r = addr_in;
+                WLB_r = 4'b0000;
             end
         end
         else begin
-            WL = data;
-            WLB = ~data;
+            WL_r = data;
+            WLB_r = ~data;
         end
     end
 
-    assign WL_bar  = ~WL;
-    assign WLB_bar = ~WLB;
-	
+    assign WL  = clk ? WL_r : 4'b0000;
+    assign WLB = clk ? WLB_r : 4'b0000;
 endmodule
 
