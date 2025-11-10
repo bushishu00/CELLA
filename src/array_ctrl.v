@@ -48,7 +48,7 @@ module array_ctrl (
     assign col_mux_w[0]= ~addr_col[2] & ~addr_col[1] & ~addr_col[0];
 
     // bank_mux, col_mux
-    always@(posedge clk or negedge rst_n) begin
+    always@(*) begin
         if (!rst_n) begin
             bank_mux <= 16'b0;
             col_mux  <= 8'b0;
@@ -75,7 +75,7 @@ module array_ctrl (
     end
     
     // mac_en, w_en
-    always @(posedge clk or negedge rst_n) begin
+    always @(*) begin
         if (!rst_n) begin
             mac_en <= 1'b1;
             w_en   <= 1'b0;
@@ -103,7 +103,7 @@ module array_ctrl (
     end
 
     // data_op
-    always @(posedge clk or negedge rst_n) begin
+    always @(*) begin
         if (!rst_n) begin
             data_op <= 16'b0;
         end
