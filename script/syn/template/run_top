@@ -1,0 +1,7 @@
+mkdir reports_<your top module name>
+mkdir outputs_<your top module name>
+mkdir svf
+dc_shell -f ./scripts/syn_<your top module name>.tcl | tee ./reports_<your top module name>/syn_<your top module name>.log
+cp default.svf ./svf/default_<your top module name>.svf
+
+

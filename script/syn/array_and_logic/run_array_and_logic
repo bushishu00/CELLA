@@ -1,0 +1,7 @@
+mkdir reports_array_and_logic
+mkdir outputs_array_and_logic
+mkdir svf
+dc_shell -f ./scripts/syn_array_and_logic.tcl | tee ./reports_array_and_logic/syn_array_and_logic.log
+cp default.svf ./svf/default_array_and_logic.svf
+
+

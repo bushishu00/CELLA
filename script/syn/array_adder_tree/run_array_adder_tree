@@ -1,0 +1,6 @@
+mkdir reports_array_adder_tree
+mkdir svf
+dc_shell -f ./scripts/syn_array_adder_tree.tcl | tee ./reports_top/syn_array_adder_tree.log
+cp default.svf ./svf/default_array_adder_tree.svf
+
+

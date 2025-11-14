@@ -1,17 +1,23 @@
 module array_ctrl (
     input             clk,
+    input             clk_inv,
     input             rst_n,
 
     input   [1:0]     op_code,
     input   [3:0]     addr_bank,
     input   [2:0]     addr_col,
 
-    input   [15:0]    data,
+    input   [15:0]    data_bank,
+    input   [15:0]    data_in,
 
+    output            preb_en,
     output reg        mac_en,
-    output reg        w_en,
     output reg [15:0] data_op,
     output reg [15:0] bank_mux,
+    output reg        w_en,
+
+    output reg        mac_en_neg,
+    output reg [15:0] data_and,
     output reg [7:0]  col_mux
 );  
 
@@ -47,80 +53,60 @@ module array_ctrl (
     assign col_mux_w[1]= ~addr_col[2] & ~addr_col[1] &  addr_col[0];
     assign col_mux_w[0]= ~addr_col[2] & ~addr_col[1] & ~addr_col[0];
 
-    // bank_mux, col_mux
+// bank control signals, directly out
     always@(*) begin
-        if (!rst_n) begin
-            bank_mux <= 16'b0;
-            col_mux  <= 8'b0;
-        end
-        else if (op_code == 2'b00) begin
-            // read, all banks selected, all cols selected
-            bank_mux <= 16'hFFFF;
-            col_mux  <= 8'hFF;
+        if (op_code == 2'b00) begin
+            mac_en   = 1'b1;
+            w_en     = 1'b0;
+            bank_mux = 16'b1111_1111_1111_1111;
+            data_op  = data_bank;
         end
         else if (op_code == 2'b01) begin
-            // write, only one bank selected, no cols selected because write
-            bank_mux <= bank_mux_w;
-            col_mux  <= 8'b0;
+            mac_en   = 1'b1;
+            w_en     = 1'b1;
+            bank_mux = bank_mux_w;
+            data_op  = {8'b0000_0000, {data_bank[7:0]}};
         end
         else if (op_code == 2'b10) begin
-            // search, all banks selected, only one col selected
-            bank_mux <= 16'hFFFF; 
-            col_mux  <= col_mux_w;
+            mac_en   = 1'b0;
+            w_en     = 1'b0;
+            bank_mux = 16'b1111_1111_1111_1111; 
+            data_op  = {12'b0000_0000_0000, {data_bank[3:0]}};
         end
         else begin
-            bank_mux <= 16'b0;
-            col_mux  <= 8'b0;
-        end
-    end
-    
-    // mac_en, w_en
-    always @(*) begin
-        if (!rst_n) begin
-            mac_en <= 1'b1;
-            w_en   <= 1'b0;
-        end
-        else if (op_code == 2'b00) begin
-            // read 
-            mac_en <= 1'b1;
-            w_en   <= 1'b0;
-        end
-        else if (op_code == 2'b01) begin
-            // write 
-            mac_en <= 1'b1;
-            w_en   <= 1'b1;
-        end
-        else if (op_code == 2'b10) begin
-            // search
-            mac_en <= 1'b0;
-            w_en   <= 1'b0;
-        end
-        else begin
-            // idle
-            mac_en <= 1'b1;
-            w_en   <= 1'b0;
+            mac_en   = 1'b1;
+            w_en     = 1'b0;
+            bank_mux = 16'b0000_0000_0000_0000;
+            data_op  = 16'b0000_0000_0000_0000;
         end
     end
 
-    // data_op
-    always @(*) begin
+// adder tree signal, sync to negedge clk
+    always@(posedge clk_inv or negedge rst_n) begin
         if (!rst_n) begin
-            data_op <= 16'b0;
+            col_mux    <= 8'b0000_0000;
+            mac_en_neg <= 1'b1;
+            data_and   <= 16'b0000_0000_0000_0000;
         end
         else if (op_code == 2'b00) begin
-            // read, data_op is read_bar
-            data_op <= data;
+            col_mux    <= 8'b1111_1111;
+            mac_en_neg <= 1'b1;
+            data_and   <= data_in;
         end
         else if (op_code == 2'b01) begin
-            // write, data_op is word, lower 8bits valid
-            data_op <= {8'b00000000, {data[7:0]}};
+            col_mux    <= 8'b0000_0000;
+            mac_en_neg <= 1'b1;
+            data_and   <= 16'b0000_0000_0000_0000;
         end
         else if (op_code == 2'b10) begin
-            // search, data_op is query, lower 4 bits valid
-            data_op <= {12'b000000000000, {data[3:0]}};
+            col_mux    <= col_mux_w;
+            mac_en_neg <= 1'b0;
+            data_and   <= 16'b1111_1111_1111_1111;
         end
         else begin
-            data_op <= 16'b0;
+            col_mux    <= 8'b0000_0000;
+            mac_en_neg <= 1'b1;
+            data_and   <= 16'b0000_0000_0000_0000;
         end
     end
 

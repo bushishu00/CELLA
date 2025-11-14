@@ -1,0 +1,7 @@
+mkdir reports_array_ctrl
+mkdir outputs_array_ctrl
+mkdir svf
+dc_shell -f ./scripts/syn_array_ctrl.tcl | tee ./reports_array_ctrl/syn_array_ctrl.log
+cp default.svf ./svf/default_array_ctrl.svf
+
+

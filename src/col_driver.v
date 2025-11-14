@@ -1,5 +1,3 @@
-// define independent ports for virtuoso design
-
 module col_driver (
 	input            clk,
 	input            cs,
@@ -10,16 +8,16 @@ module col_driver (
  );
 	always@(posedge clk or negedge cs) begin
 		if (!cs) begin
-			BL  = 8'bz;
-			BLB = 8'bz;
+			BL  <= 8'bzzzzzzzz;
+			BLB <= 8'bzzzzzzzz;
 		end
 		else if (w_en) begin
-			BL  = data;
-			BLB = ~data;
+			BL  <= data;
+			BLB <= ~data;
 		end
 		else begin
-			BL  = 8'bz;
-			BLB = 8'bz;
+			BL  <= 8'bzzzzzzzz;
+			BLB <= 8'bzzzzzzzz;
 		end
 	end
 endmodule

@@ -1,7 +1,6 @@
-//Verilog HDL for "CIM_macro", "row_decoder" "functional"
-
 module row_decoder (
     input        clk,
+    input        preb_en,
     input        cs,
 	input        MAC_en,
     input        read_bar,
@@ -20,31 +19,30 @@ module row_decoder (
 
     reg [3:0] WL_r, WLB_r;
     // muxing logic for CAM and MAC
-	always @(posedge clk or negedge cs) begin
+	always @(posedge clk) begin
         if (!cs) begin
-            WL_r = 4'b0000;
-            WLB_r = 4'b0000;
+            WL_r <= 4'b0000;
+            WLB_r <= 4'b0000;
         end
         else if (w_en) begin
-            WL_r = addr_in;
-            WLB_r = addr_in;
+            WL_r <= addr_in;
+            WLB_r <= addr_in;
         end 
         else if (MAC_en) begin
             if (read_bar) begin
-                WL_r = 4'b0000;
-                WLB_r = addr_in;
+                WL_r <= 4'b0000;
+                WLB_r <= addr_in;
             end else begin
-                WL_r = addr_in;
-                WLB_r = 4'b0000;
+                WL_r <= addr_in;
+                WLB_r <= 4'b0000;
             end
         end
         else begin
-            WL_r = data;
-            WLB_r = ~data;
+            WL_r <= data;
+            WLB_r <= ~data;
         end
     end
-
-    assign WL  = clk ? WL_r : 4'b0000;
-    assign WLB = clk ? WLB_r : 4'b0000;
+	
+    assign WL  = preb_en ? WL_r : 4'b0000;
+    assign WLB = preb_en ? WLB_r : 4'b0000;
 endmodule
-

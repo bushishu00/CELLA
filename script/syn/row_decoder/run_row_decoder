@@ -1,0 +1,7 @@
+mkdir reports_row_decoder
+mkdir outputs_row_decoder
+mkdir svf
+dc_shell -f ./scripts/syn_row_decoder.tcl | tee ./reports_row_decoder/syn_row_decoder.log
+cp default.svf ./svf/default_row_decoder.svf
+
+
