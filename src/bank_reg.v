@@ -3,7 +3,7 @@ module bank_reg (
     input clk_inv,
     output reg [7:0] Q
 );
-    always@(negedge clk_inv) begin
+    always@(posedge clk_inv) begin
         Q <= Din;
     end
 endmodule

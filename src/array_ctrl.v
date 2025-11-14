@@ -10,7 +10,8 @@ module array_ctrl (
     input   [15:0]    data_bank,
     input   [15:0]    data_in,
 
-    output            preb_en,
+    output            clk_copy,
+
     output reg        mac_en,
     output reg [15:0] data_op,
     output reg [15:0] bank_mux,
@@ -20,6 +21,8 @@ module array_ctrl (
     output reg [15:0] data_and,
     output reg [7:0]  col_mux
 );  
+
+    assign clk_copy = clk;
 
     // addr decode
     wire [15:0] bank_mux_w;

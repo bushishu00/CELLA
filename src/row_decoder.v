@@ -1,6 +1,6 @@
 module row_decoder (
     input        clk,
-    input        preb_en,
+    input        preb,
     input        cs,
 	input        MAC_en,
     input        read_bar,
@@ -43,6 +43,6 @@ module row_decoder (
         end
     end
 	
-    assign WL  = preb_en ? WL_r : 4'b0000;
-    assign WLB = preb_en ? WLB_r : 4'b0000;
+    assign WL  = preb ? WL_r  : 4'b0000;
+    assign WLB = preb ? WLB_r : 4'b0000;
 endmodule

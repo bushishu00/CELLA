@@ -1,9 +1,9 @@
 module bank_ctrl (
-    input  preb_en,
+    input  clk,
     input  w_en,    
     input  cs,
     output preb
 );
-    assign preb = cs & (w_en | preb_en);
+    assign preb = cs & (w_en | clk);
 
 endmodule
