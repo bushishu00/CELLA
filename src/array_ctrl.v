@@ -22,8 +22,6 @@ module array_ctrl (
     output reg [7:0]  col_mux
 );  
 
-    assign clk_copy = clk;
-
     // addr decode
     wire [15:0] bank_mux_w;
     wire [7:0]  col_mux_w;
@@ -112,5 +110,29 @@ module array_ctrl (
             data_and   <= 16'b0000_0000_0000_0000;
         end
     end
+
+// clk copy
+    reg high, low;
+    always@(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            high <= 0;
+        end
+        else begin
+            high <= ~high;
+        end
+    end
+    always@(posedge clk_inv or negedge rst_n) begin
+        if (!rst_n) begin
+            low <= 0;
+        end
+        else if (high) begin
+            low <= ~low;
+        end
+        else begin
+            low <= 0;
+        end
+    end
+
+    assign clk_copy = high ^ low;
 
 endmodule

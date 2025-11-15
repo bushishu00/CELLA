@@ -1,0 +1,7 @@
+mkdir reports_bank_ctrl
+mkdir outputs_bank_ctrl
+mkdir svf
+dc_shell -f ./scripts/syn_bank_ctrl.tcl | tee ./reports_bank_ctrl/syn_bank_ctrl.log
+cp default.svf ./svf/default_bank_ctrl.svf
+
+
