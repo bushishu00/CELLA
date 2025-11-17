@@ -1,138 +1,78 @@
 module array_ctrl (
-    input             clk,
-    input             clk_inv,
-    input             rst_n,
+    input         clk,
+    input         clk_inv,
+    input         rst_n,
 
-    input   [1:0]     op_code,
-    input   [3:0]     addr_bank,
-    input   [2:0]     addr_col,
+    input  [1:0]  op_code,
+    input  [8:0]  addr,
 
-    input   [15:0]    data_bank,
-    input   [15:0]    data_in,
+    input  [15:0] data_bank,
+    input  [15:0] data_in,
 
-    output            clk_copy,
+    output        mac_en,
+    output [15:0] data_op,
+    output [15:0] bank_mux,
+    output [1:0]  addr_row,
+    output        w_en,
 
-    output reg        mac_en,
-    output reg [15:0] data_op,
-    output reg [15:0] bank_mux,
-    output reg        w_en,
+    output [15:0] data_and,
+    output [7:0]  col_mux,
 
-    output reg        mac_en_neg,
-    output reg [15:0] data_and,
-    output reg [7:0]  col_mux
+    output        clk_copy,
+    output [3:0]  query_bar
 );  
-
-    // addr decode
+// register input and decode them
+    wire        mac_en_w;
+    wire [15:0] data_op_w;
     wire [15:0] bank_mux_w;
+    wire [1:0]  addr_row_w;
+    wire        w_en_w;
+    wire [15:0] data_and_w;
     wire [7:0]  col_mux_w;
+// for glitch
+	wire [3:0] query_bar_w;
 
-    //4 to 16 decoder for bank selection
-    assign bank_mux_w[15]=  addr_bank[3] &  addr_bank[2] &  addr_bank[1] &  addr_bank[0];
-    assign bank_mux_w[14]=  addr_bank[3] &  addr_bank[2] &  addr_bank[1] & ~addr_bank[0];
-    assign bank_mux_w[13]=  addr_bank[3] &  addr_bank[2] & ~addr_bank[1] &  addr_bank[0];
-    assign bank_mux_w[12]=  addr_bank[3] &  addr_bank[2] & ~addr_bank[1] & ~addr_bank[0];
-    assign bank_mux_w[11]=  addr_bank[3] & ~addr_bank[2] &  addr_bank[1] &  addr_bank[0];
-    assign bank_mux_w[10]=  addr_bank[3] & ~addr_bank[2] &  addr_bank[1] & ~addr_bank[0];
-    assign bank_mux_w[9] =  addr_bank[3] & ~addr_bank[2] & ~addr_bank[1] &  addr_bank[0];
-    assign bank_mux_w[8] =  addr_bank[3] & ~addr_bank[2] & ~addr_bank[1] & ~addr_bank[0];
-    assign bank_mux_w[7] = ~addr_bank[3] &  addr_bank[2] &  addr_bank[1] &  addr_bank[0];
-    assign bank_mux_w[6] = ~addr_bank[3] &  addr_bank[2] &  addr_bank[1] & ~addr_bank[0];
-    assign bank_mux_w[5] = ~addr_bank[3] &  addr_bank[2] & ~addr_bank[1] &  addr_bank[0];
-    assign bank_mux_w[4] = ~addr_bank[3] &  addr_bank[2] & ~addr_bank[1] & ~addr_bank[0];
-    assign bank_mux_w[3] = ~addr_bank[3] & ~addr_bank[2] &  addr_bank[1] &  addr_bank[0];
-    assign bank_mux_w[2] = ~addr_bank[3] & ~addr_bank[2] &  addr_bank[1] & ~addr_bank[0];
-    assign bank_mux_w[1] = ~addr_bank[3] & ~addr_bank[2] & ~addr_bank[1] &  addr_bank[0];
-    assign bank_mux_w[0] = ~addr_bank[3] & ~addr_bank[2] & ~addr_bank[1] & ~addr_bank[0];
+    array_decoder decoder(
+    .clk(clk),
+    .rst_n(rst_n),
+    .op_code(op_code),
+    .addr(addr),
+    .data_bank(data_bank),
+    .data_in(data_in),
 
-    // 3 to 8 decoder for column selection
-    assign col_mux_w[7]=  addr_col[2] &  addr_col[1] &  addr_col[0];
-    assign col_mux_w[6]=  addr_col[2] &  addr_col[1] & ~addr_col[0];
-    assign col_mux_w[5]=  addr_col[2] & ~addr_col[1] &  addr_col[0];
-    assign col_mux_w[4]=  addr_col[2] & ~addr_col[1] & ~addr_col[0];
-    assign col_mux_w[3]= ~addr_col[2] &  addr_col[1] &  addr_col[0];
-    assign col_mux_w[2]= ~addr_col[2] &  addr_col[1] & ~addr_col[0];
-    assign col_mux_w[1]= ~addr_col[2] & ~addr_col[1] &  addr_col[0];
-    assign col_mux_w[0]= ~addr_col[2] & ~addr_col[1] & ~addr_col[0];
+    .mac_en(mac_en_w),
+    .data_op(data_op_w),
+    .bank_mux(bank_mux_w),
+    .addr_row(addr_row_w),
+    .w_en(w_en_w),
 
-// bank control signals, directly out
-    always@(*) begin
-        if (op_code == 2'b00) begin
-            mac_en   = 1'b1;
-            w_en     = 1'b0;
-            bank_mux = 16'b1111_1111_1111_1111;
-            data_op  = data_bank;
-        end
-        else if (op_code == 2'b01) begin
-            mac_en   = 1'b1;
-            w_en     = 1'b1;
-            bank_mux = bank_mux_w;
-            data_op  = {8'b0000_0000, {data_bank[7:0]}};
-        end
-        else if (op_code == 2'b10) begin
-            mac_en   = 1'b0;
-            w_en     = 1'b0;
-            bank_mux = 16'b1111_1111_1111_1111; 
-            data_op  = {12'b0000_0000_0000, {data_bank[3:0]}};
-        end
-        else begin
-            mac_en   = 1'b1;
-            w_en     = 1'b0;
-            bank_mux = 16'b0000_0000_0000_0000;
-            data_op  = 16'b0000_0000_0000_0000;
-        end
-    end
+    .data_and(data_and_w),
+    .col_mux(col_mux_w),
 
-// adder tree signal, sync to negedge clk
-    always@(posedge clk_inv or negedge rst_n) begin
-        if (!rst_n) begin
-            col_mux    <= 8'b0000_0000;
-            mac_en_neg <= 1'b1;
-            data_and   <= 16'b0000_0000_0000_0000;
-        end
-        else if (op_code == 2'b00) begin
-            col_mux    <= 8'b1111_1111;
-            mac_en_neg <= 1'b1;
-            data_and   <= data_in;
-        end
-        else if (op_code == 2'b01) begin
-            col_mux    <= 8'b0000_0000;
-            mac_en_neg <= 1'b1;
-            data_and   <= 16'b0000_0000_0000_0000;
-        end
-        else if (op_code == 2'b10) begin
-            col_mux    <= col_mux_w;
-            mac_en_neg <= 1'b0;
-            data_and   <= 16'b1111_1111_1111_1111;
-        end
-        else begin
-            col_mux    <= 8'b0000_0000;
-            mac_en_neg <= 1'b1;
-            data_and   <= 16'b0000_0000_0000_0000;
-        end
-    end
+	.query_bar(query_bar_w)
+    );
 
-// clk copy
-    reg high, low;
-    always@(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin
-            high <= 0;
-        end
-        else begin
-            high <= ~high;
-        end
-    end
-    always@(posedge clk_inv or negedge rst_n) begin
-        if (!rst_n) begin
-            low <= 0;
-        end
-        else if (high) begin
-            low <= ~low;
-        end
-        else begin
-            low <= 0;
-        end
-    end
+// create clock copy signal
+    wire clk_copy_w;
+    clk_copy copy (
+    .clk(clk),
+    .clk_inv(clk_inv),
+    .rst_n(rst_n),
 
-    assign clk_copy = high ^ low;
+    .clk_copy(clk_copy_w)
+    );
 
+// connect all outputs  
+    assign mac_en   = mac_en_w;
+    assign data_op  = data_op_w;
+    assign bank_mux = bank_mux_w;
+    assign addr_row = addr_row_w;
+    assign w_en     = w_en_w;
+
+    assign data_and = data_and_w;
+    assign col_mux  = col_mux_w;
+
+    assign clk_copy = clk_copy_w;
+
+	assign query_bar = query_bar_w;
 endmodule

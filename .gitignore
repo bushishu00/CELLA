@@ -2,3 +2,5 @@ sim/
 .vscode/
 *.ini
 transcript
+script/syn/
+syn/

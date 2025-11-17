@@ -1,7 +1,0 @@
-mkdir reports_bank_reg
-mkdir outputs_bank_reg
-mkdir svf
-dc_shell -f ./scripts/syn_bank_reg.tcl | tee ./reports_bank_reg/syn_bank_reg.log
-cp default.svf ./svf/default_bank_reg.svf
-
-

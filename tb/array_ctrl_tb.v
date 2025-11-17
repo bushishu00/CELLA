@@ -1,18 +1,50 @@
-module array_behaviour_stimulus (
-    output reg         clk,
-    output reg         rst_n,
-    output reg  [1:0]  op_code,
-    output reg  [8:0]  addr,
-    output reg  [15:0] data_bank,
-    output reg  [15:0] data_in
-);
+`timescale 1ns / 1ps
+module array_ctrl_tb;
 
-    // 时钟生成 (10ns周期)
+    // Clock & control
+    reg clk;
+    reg rst_n;
+
+    // Inputs
+    reg [1:0]  op_code;
+    reg [8:0]  addr;
+    reg [15:0] data_bank;
+    reg [15:0] data_in;
+
+    // Outputs
+    wire       mac_en;
+    wire [15:0] data_op;
+    wire [15:0] bank_mux;
+    wire       w_en;
+    wire [15:0] data_and;
+    wire [7:0]  col_mux;
+
+    // DUT instantiation
+    array_ctrl u_dut (
+        .clk(clk),
+        .rst_n(rst_n),
+        .op_code(op_code),
+        .addr_bank(addr[8:5]),
+        .addr_col(addr[2:0]),
+        .data_bank(data_bank),
+        .data_in(data_in),
+
+        .mac_en(mac_en),
+        .data_op(data_op),
+        .bank_mux(bank_mux),
+        .w_en(w_en),
+        .data_and(data_and),
+        .col_mux(col_mux)
+    );
+
+    // Generate clk (4ns period => 2ns high, 2ns low)
     initial begin
         clk = 0;
-        forever #2 clk = ~clk;
+        forever #2 clk = ~clk;  // 4ns period
     end
 
+
+    // Test stimulus
     initial begin
 // 复位序列
         rst_n = 0;
@@ -20,7 +52,7 @@ module array_behaviour_stimulus (
         addr = 9'd0;
         data_bank = 16'd0;
         data_in = 16'd0;
-        #5;
+        #6;
         rst_n = 1;
 
 // ===== 写入权重 =====
@@ -434,6 +466,7 @@ module array_behaviour_stimulus (
         addr = 9'b0000_00_000;
         data_bank = 16'h000F;
         data_in = 16'hFFFF;
+        #10;
+        $finish;
     end
-
 endmodule
