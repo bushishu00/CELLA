@@ -1,5 +1,6 @@
 module array_behaviour_stimulus (
     output reg         clk,
+    output reg         clk_inv,
     output reg         rst_n,
     output reg  [1:0]  op_code,
     output reg  [8:0]  addr,
@@ -10,7 +11,12 @@ module array_behaviour_stimulus (
     // 时钟生成 (10ns周期)
     initial begin
         clk = 0;
-        forever #2 clk = ~clk;
+        forever #1 clk = ~clk;
+    end
+
+    initial begin
+        clk_inv = 0;
+        forever #1 clk_inv = ~clk_inv;
     end
 
     initial begin
@@ -20,7 +26,7 @@ module array_behaviour_stimulus (
         addr = 9'd0;
         data_bank = 16'd0;
         data_in = 16'd0;
-        #5;
+        #6;
         rst_n = 1;
 
 // ===== 写入权重 =====

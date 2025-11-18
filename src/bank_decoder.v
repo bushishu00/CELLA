@@ -1,4 +1,4 @@
-module row_decoder (
+module bank_decoder (
     input            clk_copy,
     input            cs,
 	input            mac_en,

@@ -1,4 +1,4 @@
-module array_and_logic ( 
+module array_logic ( 
     input         clk_inv,
     input         rst_n,
 

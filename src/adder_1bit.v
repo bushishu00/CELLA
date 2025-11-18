@@ -1,4 +1,4 @@
-module full_adder ( 
+module adder_1bit ( 
     input  a,
     input  b,
     input  cin,
